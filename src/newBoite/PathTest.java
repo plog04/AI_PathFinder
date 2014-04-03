@@ -33,6 +33,9 @@ public class PathTest extends JFrame {
 	private PathFinder finder;
 	/** The last path found for the current unit */
 	private Path path;
+	private int tileSize = 32;
+	private int screenHeight = 1080;
+	private int screenWidth = 1080;
 	
 	/** The list of tile images to render the map */
 	private Image[] tiles = new Image[6];
@@ -88,7 +91,7 @@ public class PathTest extends JFrame {
 			}
 		});
 		
-		setSize(1380,640);
+		setSize(screenWidth,screenHeight);
 		setResizable(true);
 		setVisible(true);
 	}
@@ -117,10 +120,12 @@ public class PathTest extends JFrame {
 	 * @param y The y coordinate of the mouse cursor on the screen
 	 */
 	private void handleMouseMoved(int x, int y) {
+		//Coordonnée p/r a l'origine situé a (50,50)
 		x -= 50;
 		y -= 50;
-		x /= 32;
-		y /= 32;
+		//Coordonnée en unité tile
+		x /= tileSize;
+		y /= tileSize;
 		
 		if ((x < 0) || (y < 0) || (x >= map.getWidthInTiles()) || (y >= map.getHeightInTiles())) {
 			return;
@@ -144,10 +149,12 @@ public class PathTest extends JFrame {
 	 * @param y The y coordinate of the mouse cursor on the screen
 	 */
 	private void handleMousePressed(int x, int y) {
+		//Coordonnée p/r a l'origine situé a (50,50)
 		x -= 50;
 		y -= 50;
-		x /= 32;
-		y /= 32;
+		//Coordonnée en unité tile
+		x /= tileSize;
+		y /= tileSize;
 		
 		if ((x < 0) || (y < 0) || (x >= map.getWidthInTiles()) || (y >= map.getHeightInTiles())) {
 			return;
@@ -184,27 +191,27 @@ public class PathTest extends JFrame {
 	public void paint(Graphics graphics) {	
 		// create an offscreen buffer to render the map
 		if (buffer == null) {
-			buffer = new BufferedImage(1380, 640, BufferedImage.TYPE_INT_ARGB);			
+			buffer = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);			
 		}
 		Graphics g = buffer.getGraphics();
 		
-		g.clearRect(0,0,1380,640);
-		g.translate(50, 50);
+		g.clearRect(0,0,screenWidth,screenHeight);
+		g.translate(50, 50);	//Deplacement de l'origine du systeme au point (50,50)
 		
 		// cycle through the tiles in the map drawing the appropriate
 		// image for the terrain and units where appropriate
-		int dimTile = 32;
+	
 				
-		for (int x=0;x<map.getWidthInTiles()-1;x++) {
-			for (int y=0;y<map.getHeightInTiles()-1;y++) {
-				g.drawImage(tiles[map.getTerrain(x, y)],x*dimTile,y*dimTile,null);
+		for (int x=0;x<map.getWidthInTiles();x++) {
+			for (int y=0;y<map.getHeightInTiles();y++) {
+				g.drawImage(tiles[map.getTerrain(x, y)],x*tileSize,y*tileSize,null);
 				if (map.getUnit(x, y) != 0) {
-					g.drawImage(tiles[map.getUnit(x, y)],x*dimTile,y*dimTile,null);
+					g.drawImage(tiles[map.getUnit(x, y)],x*tileSize,y*tileSize,null);
 				} else {
 					if (path != null) {
 						if (path.contains(x, y)) {
 							g.setColor(Color.blue);
-							g.fillRect((x*dimTile)+4, (y*dimTile)+4,7,7);
+							g.fillRect((x*tileSize)+4, (y*tileSize)+4,7,7);
 						}
 					}	
 				}
@@ -214,10 +221,10 @@ public class PathTest extends JFrame {
 		// if a unit is selected then draw a box around it
 		if (selectedx != -1) {
 			g.setColor(Color.black);
-			g.drawRect(selectedx*dimTile, selectedy*dimTile, dimTile-1, dimTile-1);
-			g.drawRect((selectedx*dimTile)-2, (selectedy*dimTile)-2, dimTile +3,dimTile +3);
+			g.drawRect(selectedx*tileSize, selectedy*tileSize, tileSize-1, tileSize-1);
+			g.drawRect((selectedx*tileSize)-2, (selectedy*tileSize)-2, tileSize +3,tileSize +3);
 			g.setColor(Color.white);
-			g.drawRect((selectedx*dimTile)-1, (selectedy*dimTile)-1, dimTile +1,dimTile +1);
+			g.drawRect((selectedx*tileSize)-1, (selectedy*tileSize)-1, tileSize +1,tileSize +1);
 		}
 		
 		// finally draw the buffer to the real graphics context in one

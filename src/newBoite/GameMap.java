@@ -15,7 +15,7 @@ public class GameMap implements TileBasedMap {
 	/** The map width in tiles */
 	public static final int WIDTH = 30;
 	/** The map height in tiles */
-	public static final int HEIGHT = 20;
+	public static final int HEIGHT = 30;
 	
 	/** Indicate grass terrain at a given location */
 	public static final int GRASS = 0;
