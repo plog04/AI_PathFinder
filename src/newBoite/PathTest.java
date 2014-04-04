@@ -12,12 +12,14 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import newBoite.AStarPathFinder;
 import newBoite.Path;
+import newBoite.AStarPathFinder.Node;
 import newBoite.PathFinder;
 
 /**
@@ -33,6 +35,7 @@ public class PathTest extends JFrame {
 	private PathFinder finder;
 	/** The last path found for the current unit */
 	private Path path;
+	private ArrayList<AStarPathFinder.Node> nodesCheck;
 	private int tileSize = 32;
 	private int screenHeight = 1080;
 	private int screenWidth = 1080;
@@ -137,6 +140,10 @@ public class PathTest extends JFrame {
 				lastFindY = y;
 				path = finder.findPath(new UnitMover(map.getUnit(selectedx, selectedy)), 
 									   selectedx, selectedy, x, y);
+				if(path!=null)
+					nodesCheck=finder.getClosedList();
+				else
+					nodesCheck=null;
 				repaint(0);
 			}
 		}
@@ -169,9 +176,10 @@ public class PathTest extends JFrame {
 				map.clearVisited();
 				path = finder.findPath(new UnitMover(map.getUnit(selectedx, selectedy)), 
 						   			   selectedx, selectedy, x, y);
-				
+				nodesCheck = finder.getClosedList();
 				if (path != null) {
 					path = null;
+					nodesCheck = null;
 					int unit = map.getUnit(selectedx, selectedy);
 					map.setUnit(selectedx, selectedy, 0);
 					map.setUnit(x,y,unit);
@@ -208,12 +216,23 @@ public class PathTest extends JFrame {
 				if (map.getUnit(x, y) != 0) {
 					g.drawImage(tiles[map.getUnit(x, y)],x*tileSize,y*tileSize,null);
 				} else {
+					//if (finder.getClosedList() != null){
+					if (nodesCheck != null){	
+						for(Node n:nodesCheck){
+							if (n.contains(x,y)){
+								g.setColor(Color.red);
+								g.fillRect((x*tileSize)+4, (y*tileSize)+4,7,7);
+								break;
+							}
+						}
+					}
 					if (path != null) {
 						if (path.contains(x, y)) {
 							g.setColor(Color.blue);
 							g.fillRect((x*tileSize)+4, (y*tileSize)+4,7,7);
 						}
-					}	
+					}
+					
 				}
 			}
 		}

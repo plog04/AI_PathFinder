@@ -1,5 +1,7 @@
 package newBoite;
 
+import java.util.ArrayList;
+import newBoite.AStarPathFinder.Node;
 /**
  * A description of an implementation that can find a path from one 
  * location on a tile map to another based on information provided
@@ -26,4 +28,5 @@ public interface PathFinder {
 	 * @return The path found from start to end, or null if no path can be found.
 	 */
 	public Path findPath(Mover mover, int sx, int sy, int tx, int ty);
+	public ArrayList<Node> getClosedList();
 }

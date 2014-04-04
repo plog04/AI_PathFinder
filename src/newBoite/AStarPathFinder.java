@@ -220,6 +220,15 @@ public class AStarPathFinder implements PathFinder {
 	}
 	
 	/**
+	 * get the closed list
+	 * 
+	 * @param node The node to add to the closed list
+	 */
+	public ArrayList getClosedList() {
+		return closed;
+	}
+	
+	/**
 	 * Check if the node supplied is in the closed list
 	 * 
 	 * @param node The node to search for
@@ -228,7 +237,7 @@ public class AStarPathFinder implements PathFinder {
 	protected boolean inClosedList(Node node) {
 		return closed.contains(node);
 	}
-	
+		
 	/**
 	 * Remove a node from the closed list
 	 * 
@@ -354,7 +363,7 @@ public class AStarPathFinder implements PathFinder {
 	/**
 	 * A single node in the search graph
 	 */
-	private class Node implements Comparable {
+	public class Node implements Comparable {
 		/** The x coordinate of the node */
 		private int x;
 		/** The y coordinate of the node */
@@ -390,6 +399,10 @@ public class AStarPathFinder implements PathFinder {
 			this.parent = parent;
 			
 			return depth;
+		}
+		
+		public boolean contains(int x, int y){
+			return (this.x==x && this.y==y);
 		}
 		
 		/**
