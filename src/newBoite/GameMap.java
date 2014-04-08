@@ -49,13 +49,20 @@ public class GameMap implements TileBasedMap {
 		fillArea(0,15,7,5,WATER);
 		fillArea(7,18,13,2,WATER);
 		
-		//fillArea(17,5,10,3,TREES);
-		fillArea(15,8,5,3,TREES);
+		//Labyrinthe #############
+		fillArea(10,5,15,15,TREES);
+		fillArea(11,6,13, 13, GRASS);
+		fillArea(12,7,11,11,TREES);
+		fillArea(13,8,9, 9, GRASS);
+		fillArea(14,9,7,7,TREES);
+		fillArea(15,10,5, 5, GRASS);
 		
-		fillArea(8,2,7,3,TREES);
-		fillArea(10,5,3,3,TREES);
+		fillArea(20,5, 1, 1, GRASS);
+		fillArea(20,17, 1, 1, GRASS);
+		fillArea(17,9, 1, 1, GRASS);
+		//########################
 		
-		units[15][15] = TANK;
+		units[15][2] = TANK;
 		units[2][7] = BOAT;
 		units[13][13] = PLANE;
 	}
