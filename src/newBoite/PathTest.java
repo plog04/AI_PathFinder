@@ -19,7 +19,7 @@ import javax.swing.JFrame;
 
 import newBoite.AStarPathFinder;
 import newBoite.Path;
-import newBoite.AStarPathFinder.Node;
+//import newBoite.AStarPathFinder.Node;
 import newBoite.PathFinder;
 
 /**
@@ -35,7 +35,7 @@ public class PathTest extends JFrame {
 	private PathFinder finder;
 	/** The last path found for the current unit */
 	private Path path;
-	private ArrayList<AStarPathFinder.Node> nodesCheck;
+	private ArrayList<Node> nodesCheck;
 	private int tileSize = 32;
 	private int screenHeight = 1080;
 	private int screenWidth = 1080;
@@ -73,7 +73,7 @@ public class PathTest extends JFrame {
 			System.exit(0);
 		}
 		
-		finder = new AStarPathFinder(map, 500, true);
+		finder = new AStarPathFinder(map, 500, false);
 		
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {

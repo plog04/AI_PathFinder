@@ -42,12 +42,12 @@ public class GameMap implements TileBasedMap {
 	 */
 	public GameMap() {
 		// create some test data
+		
+		//Put grass everywhere first
 		fillArea(0,0,30, 20, GRASS);
-		fillArea(0,0,5,5,WATER);
-		fillArea(0,5,3,10,WATER);
-		fillArea(0,5,3,10,WATER);
-		fillArea(0,15,7,5,WATER);
-		fillArea(7,18,13,2,WATER);
+		
+		//fillArea(0,0,5,5,WATER);
+		
 		
 		//Labyrinthe #############
 		fillArea(10,5,15,15,TREES);
@@ -63,8 +63,8 @@ public class GameMap implements TileBasedMap {
 		//########################
 		
 		units[15][2] = TANK;
-		units[2][7] = BOAT;
-		units[13][13] = PLANE;
+		//units[2][7] = BOAT;
+		//units[13][13] = PLANE;
 	}
 
 	/**
