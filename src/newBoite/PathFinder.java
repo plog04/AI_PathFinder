@@ -29,4 +29,6 @@ public interface PathFinder {
 	 */
 	public Path findPath(Mover mover, int sx, int sy, int tx, int ty);
 	public ArrayList<Node> getClosedList();
+	public void setHeuristicType(int i);	
+	public void setHeuristicWeight(float w);
 }

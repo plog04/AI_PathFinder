@@ -29,6 +29,8 @@ public class AStarPathFinder implements PathFinder {
 	private boolean allowDiagMovement;
 	/** The heuristic we're applying to determine which nodes to search first */
 	private AStarHeuristic heuristic;
+	private int heuristicType;
+	private float heuristicWeight;
 	
 	/**
 	 * Create a path finder with the default heuristic - closest to target.
@@ -52,6 +54,8 @@ public class AStarPathFinder implements PathFinder {
 	public AStarPathFinder(TileBasedMap map, int maxSearchDistance, 
 						   boolean allowDiagMovement, AStarHeuristic heuristic) {
 		this.heuristic = heuristic;
+		this.heuristicType=0;
+		this.heuristicWeight=1;
 		this.map = map;
 		this.maxSearchDistance = maxSearchDistance;
 		this.allowDiagMovement = allowDiagMovement;
@@ -168,6 +172,11 @@ public class AStarPathFinder implements PathFinder {
 			target = target.getParent();
 		}
 		path.prependStep(sx,sy);
+		
+		//Give the length of the path
+		
+		System.out.println("Nombre de pas du chemin : "+ path.getLength());
+		System.out.println("Nombre case essayé sans succes : "+ this.getClosedList().size());
 		
 		// thats it, we have our path 
 		return path;
@@ -294,9 +303,21 @@ public class AStarPathFinder implements PathFinder {
 	 * @return The heuristic cost assigned to the tile
 	 */
 	public float getHeuristicCost(Mover mover, int x, int y, int tx, int ty, int sx, int sy) {
-		//return heuristic.getCost(map, mover, x, y, tx, ty);
-		return heuristic.getCostManhattan(map, mover, x, y, tx, ty);
-		//return heuristic.getCostWithDynamicWeighting(map, mover, x, y, tx, ty, sx, sy);
+		if(this.heuristicType==0)
+			return heuristic.getCostManhattan(map, mover, this.heuristicWeight, x, y, tx, ty);
+		else if (this.heuristicType==1){
+			return heuristic.getCostWithDynamicWeighting(map, mover,this.heuristicWeight, x, y, tx, ty, sx, sy);
+		}
+		else
+			return heuristic.getCost(map, mover, x, y, tx, ty);		
+	}
+	
+	public void setHeuristicType(int i){
+		heuristicType=i;
+	}
+	
+	public void setHeuristicWeight(float w){
+		this.heuristicWeight=w;
 	}
 	
 	/**

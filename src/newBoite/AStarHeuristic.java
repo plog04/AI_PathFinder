@@ -24,6 +24,6 @@ public interface AStarHeuristic {
 	 * @return The cost associated with the given tile
 	 */
 	public float getCost(TileBasedMap map, Mover mover, int x, int y, int tx, int ty);
-	public float getCostManhattan(TileBasedMap map, Mover mover, int x, int y, int tx, int ty);
-	public float getCostWithDynamicWeighting(TileBasedMap map, Mover mover, int x, int y, int tx, int ty, int sx, int sy);
+	public float getCostManhattan(TileBasedMap map, Mover mover, float w, int x, int y, int tx, int ty);
+	public float getCostWithDynamicWeighting(TileBasedMap map, Mover mover,float w, int x, int y, int tx, int ty, int sx, int sy);
 }

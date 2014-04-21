@@ -9,13 +9,17 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+
 
 import newBoite.AStarPathFinder;
 import newBoite.Path;
@@ -32,7 +36,7 @@ public class PathTest extends JFrame {
 	/** The map on which the units will move */
 	private GameMap map = new GameMap();
 	/** The path finder we'll use to search our map */
-	private PathFinder finder;
+	public PathFinder finder;
 	/** The last path found for the current unit */
 	private Path path;
 	private ArrayList<Node> nodesCheck;
@@ -80,14 +84,14 @@ public class PathTest extends JFrame {
 				handleMousePressed(e.getX(), e.getY());
 			}
 		});
-		addMouseMotionListener(new MouseMotionListener() {
+		/*addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
 			}
 
 			public void mouseMoved(MouseEvent e) {
 				handleMouseMoved(e.getX(), e.getY());
 			}
-		});
+		});*/
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -251,12 +255,95 @@ public class PathTest extends JFrame {
 		graphics.drawImage(buffer, 0, 0, null);
 	}
 	
+	public static void writeToFile (String content, File file){
+		try {
+			  
+			// Si le fichier n'existe pas, créons-le
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(content);
+			bw.close();
+ 
+			System.out.println("Done");
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	/**
 	 * Entry point to our simple test game
 	 * 
 	 * @param argv The arguments passed into the game
 	 */
 	public static void main(String[] argv) {
-		PathTest test = new PathTest();		
+		File file = new File("TestA.txt");
+		String content = new String();
+		Path path;
+		int n=0;	
+		PathTest test = new PathTest();	
+		
+		//Contenu des resultats d'analyse pour un test en particuler
+		/*content = "Essaie; Depart; Arrivee; cheminTrouvee (pas); NbreCaseEssaye(echec);\n";	
+		for (int i = 0; i<15;i++){
+			for (int j = 0; j<30;j++){
+				path = test.finder.findPath(new UnitMover(test.map.getUnit(15, 3)),i, 2, j, 18);			    
+				content += n +";";
+				content += "( "+i+","+2+" )"+";";
+				content += "( "+j+","+18+" )"+ ";";
+				if(path==null){
+					content += "null" +";";
+					content += "null" +";\n";
+				}
+				else{
+				content += path.getLength() +";";
+				content += test.finder.getClosedList().size() + ";\n";
+				}
+				
+				n++;
+				
+			}
+		}*/
+		
+		//Contenu des resultats d'analyse pour un ensemble de test
+		content = "Essaie; Poid; TotalTest; totalCheminNonTrouver; totalPath (pas);totalCaseEssayerEchec;\n";
+		test.finder.setHeuristicType(0);
+		int totalTest=0;
+		int totalPath=0;
+		int totalCaseEssayerEchec = 0;
+		int totalCheminNonTrouver =0;
+		test.finder.setHeuristicWeight((float)(1.2));
+		for (float z=0;z<5;z=(float)(z+0.2)){
+			totalTest=0;
+			totalPath=0;
+			totalCaseEssayerEchec = 0;
+			totalCheminNonTrouver = 0;
+			test.finder.setHeuristicWeight(z);
+			for (int i = 0; i<15;i++){
+				for (int j = 0; j<30;j++){
+					path = test.finder.findPath(new UnitMover(test.map.getUnit(15, 3)),i, 2, j, 18);
+					totalTest++;
+					if(path==null)
+						totalCheminNonTrouver++;
+					else{	
+						totalPath=totalPath+path.getLength();
+						totalCaseEssayerEchec=totalCaseEssayerEchec+test.finder.getClosedList().size();
+					}
+				}
+			}
+			content += n +";";
+			content += z +";";
+			content += totalTest+";";
+			content += totalCheminNonTrouver+ ";";
+			content += totalPath+ ";";
+			content += totalCaseEssayerEchec+ ";\n";
+			n++;
+		}
+		writeToFile(content,file );	
 	}
 }

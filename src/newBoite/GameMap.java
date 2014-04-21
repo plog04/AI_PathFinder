@@ -50,7 +50,7 @@ public class GameMap implements TileBasedMap {
 		
 		
 		//Labyrinthe #############
-		fillArea(10,5,15,15,TREES);
+		/*fillArea(10,5,15,15,TREES);
 		fillArea(11,6,13, 13, GRASS);
 		fillArea(12,7,11,11,TREES);
 		fillArea(13,8,9, 9, GRASS);
@@ -59,10 +59,19 @@ public class GameMap implements TileBasedMap {
 		
 		fillArea(20,5, 1, 1, GRASS);
 		fillArea(20,17, 1, 1, GRASS);
-		fillArea(17,9, 1, 1, GRASS);
+		fillArea(17,9, 1, 1, GRASS);*/
 		//########################
 		
-		units[15][2] = TANK;
+		//Obstacle en C #############
+		fillArea(9,10,1,10,TREES);
+		fillArea(9,20,12, 1, TREES);
+		fillArea(20,10,1,10,TREES);
+		//########################
+		
+		
+		
+		
+		units[15][3] = TANK;
 		//units[2][7] = BOAT;
 		//units[13][13] = PLANE;
 	}

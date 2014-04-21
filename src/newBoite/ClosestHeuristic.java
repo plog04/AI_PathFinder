@@ -23,14 +23,14 @@ public class ClosestHeuristic implements AStarHeuristic {
 		return result;
 	}
 	
-	public float getCostManhattan(TileBasedMap map, Mover mover, int x, int y, int tx, int ty) {		
+	public float getCostManhattan(TileBasedMap map, Mover mover,float weight, int x, int y, int tx, int ty) {		
 		float dx = Math.abs(tx - x);
 		float dy = Math.abs(ty - y);
 		
-		return dx +dy;
+		return (float) ((weight)*(dx +dy));
 	}
 	
-	public float getCostWithDynamicWeighting(TileBasedMap map, Mover mover, int x, int y, int tx, int ty, int sx, int sy) {		
+	public float getCostWithDynamicWeighting(TileBasedMap map, Mover mover,float weight, int x, int y, int tx, int ty, int sx, int sy) {		
 		float dx = Math.abs(tx - x);
 		float dy = Math.abs(ty - y);
 		
