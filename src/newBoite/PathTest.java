@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-
 import newBoite.AStarPathFinder;
 import newBoite.Path;
-//import newBoite.AStarPathFinder.Node;
 import newBoite.PathFinder;
 
 /**
@@ -217,10 +215,10 @@ public class PathTest extends JFrame {
 		for (int x=0;x<map.getWidthInTiles();x++) {
 			for (int y=0;y<map.getHeightInTiles();y++) {
 				g.drawImage(tiles[map.getTerrain(x, y)],x*tileSize,y*tileSize,null);
+				
 				if (map.getUnit(x, y) != 0) {
 					g.drawImage(tiles[map.getUnit(x, y)],x*tileSize,y*tileSize,null);
 				} else {
-					//if (finder.getClosedList() != null){
 					if (nodesCheck != null){	
 						for(Node n:nodesCheck){
 							if (n.contains(x,y)){
@@ -238,6 +236,8 @@ public class PathTest extends JFrame {
 					}
 					
 				}
+				g.setColor(Color.black);
+				g.drawRect(x*tileSize, y*tileSize, tileSize-1, tileSize-1);
 			}
 		}
 
@@ -282,48 +282,28 @@ public class PathTest extends JFrame {
 	 * @param argv The arguments passed into the game
 	 */
 	public static void main(String[] argv) {
-		File file = new File("TestA.txt");
+		File file = new File("TestB.txt");
 		String content = new String();
 		Path path;
 		int n=0;	
 		PathTest test = new PathTest();	
-		
-		//Contenu des resultats d'analyse pour un test en particuler
-		/*content = "Essaie; Depart; Arrivee; cheminTrouvee (pas); NbreCaseEssaye(echec);\n";	
-		for (int i = 0; i<15;i++){
-			for (int j = 0; j<30;j++){
-				path = test.finder.findPath(new UnitMover(test.map.getUnit(15, 3)),i, 2, j, 18);			    
-				content += n +";";
-				content += "( "+i+","+2+" )"+";";
-				content += "( "+j+","+18+" )"+ ";";
-				if(path==null){
-					content += "null" +";";
-					content += "null" +";\n";
-				}
-				else{
-				content += path.getLength() +";";
-				content += test.finder.getClosedList().size() + ";\n";
-				}
 				
-				n++;
-				
-			}
-		}*/
-		
-		//Contenu des resultats d'analyse pour un ensemble de test
+		//Calcul et enregistre le contenu des resultats d'analyse pour chaque test dans le fichier
 		content = "Essaie; Poid; TotalTest; totalCheminNonTrouver; totalPath (pas);totalCaseEssayerEchec;\n";
 		test.finder.setHeuristicType(0);
 		int totalTest=0;
 		int totalPath=0;
 		int totalCaseEssayerEchec = 0;
 		int totalCheminNonTrouver =0;
-		test.finder.setHeuristicWeight((float)(1.2));
+		test.finder.setHeuristicWeight((float)(0));
+		//Variation du poid (cout) de l'heuristique
 		for (float z=0;z<5;z=(float)(z+0.2)){
 			totalTest=0;
 			totalPath=0;
 			totalCaseEssayerEchec = 0;
 			totalCheminNonTrouver = 0;
 			test.finder.setHeuristicWeight(z);
+			//Variation des positions de depart et de destination
 			for (int i = 0; i<15;i++){
 				for (int j = 0; j<30;j++){
 					path = test.finder.findPath(new UnitMover(test.map.getUnit(15, 3)),i, 2, j, 18);
@@ -332,7 +312,7 @@ public class PathTest extends JFrame {
 						totalCheminNonTrouver++;
 					else{	
 						totalPath=totalPath+path.getLength();
-						totalCaseEssayerEchec=totalCaseEssayerEchec+test.finder.getClosedList().size();
+						totalCaseEssayerEchec=totalCaseEssayerEchec+test.finder.getClosedList().size()+test.finder.getOpenListSize()-path.getLength();
 					}
 				}
 			}

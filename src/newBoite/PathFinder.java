@@ -13,22 +13,20 @@ import newBoite.Node;
 public interface PathFinder {
 
 	/**
-	 * Find a path from the starting location provided (sx,sy) to the target
-	 * location (tx,ty) avoiding blockages and attempting to honour costs 
-	 * provided by the tile map.
-	 * 
-	 * @param mover The entity that will be moving along the path. This provides
-	 * a place to pass context information about the game entity doing the moving, e.g.
-	 * can it fly? can it swim etc.
-	 * 
-	 * @param sx The x coordinate of the start location
-	 * @param sy The y coordinate of the start location
-	 * @param tx The x coordinate of the target location
-	 * @param ty Teh y coordinate of the target location
-	 * @return The path found from start to end, or null if no path can be found.
+	 * Trouve un chemin entre le noeud de depart(sx,sy) et de destination(tx,ty)
+	 * tout en évitant les zones interdites et en minimisant le cout de deplacement
+	 * f(n)
+	 * @param mover Il s'agit de notre agent se deplacant, ce parametre contient les informations
+	 * le concernant, ie les actuateurs et senseurs.
+	 * @param sx Coordonnée x du noeud de depart
+	 * @param sy Coordonnée y du noeud de depart
+	 * @param tx Coordonnée x du noeud d'arrivee
+	 * @param ty Coordonnée y du noeud d'arrivee
+	 * @return Le chemin trouvee entre le noeud de depart et d'arrivee, sinon null si pas trouvee
 	 */
 	public Path findPath(Mover mover, int sx, int sy, int tx, int ty);
 	public ArrayList<Node> getClosedList();
+	public int getOpenListSize();
 	public void setHeuristicType(int i);	
 	public void setHeuristicWeight(float w);
 }

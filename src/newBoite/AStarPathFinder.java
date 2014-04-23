@@ -72,13 +72,14 @@ public class AStarPathFinder implements PathFinder {
 	 * @see PathFinder#findPath(Mover, int, int, int, int)
 	 */
 	public Path findPath(Mover mover, int sx, int sy, int tx, int ty) {
-		// easy first check, if the destination is blocked, we can't get there
+		// Si la case destination est un obstacle, alors annulle la recherche.
 		if (map.blocked(mover, tx, ty)) {
 			return null;
 		}
 		
-		// initial state for A*. The closed group is empty. Only the starting
-		// tile is in the open list and it's cost is zero, i.e. we're already there
+		//Initialisation de l'etat de l'agent, la liste Closed (Liste de noeud essayer et écarter de la solution) est vide,
+		//la liste Open (Liste de noeud a evaluer pouvant potentiellement faire partie de la solution) ne contient que le noeud de depart avec
+		//un cout de 0 (on est deja là) et une profondeur atteinte de 0 (pas fait de pas encore).
 		nodes[sx][sy].setCost(0);
 		nodes[sx][sy].setDepth(0); 
 		closed.clear();
@@ -87,52 +88,58 @@ public class AStarPathFinder implements PathFinder {
 		
 		nodes[tx][ty].setParent(null);
 		
-		// while we haven't found the goal and haven't exceeded our max search depth
+		// Tant que nous avons pas atteint la destination et depassé un nombre max de pas, faire:
 		int maxDepth = 0;
 		while ((maxDepth < maxSearchDistance) && (open.size() != 0)) {
-			// pull out the first node in our open list, this is determined to 
-			// be the most likely to be the next step based on our heuristic
+			
+			//Prendre le premier noeud de la liste. Il s'agit du prochain noeud à être explorer (ou reevaluer).
 			Node current = getFirstInOpen();
+			
+			//Si le noeud à evaluer est le noeud destination alors arreter la recherche.
 			if (current == nodes[tx][ty]) {
 				break;
 			}
-			
+			// On enleve le noeud de la liste Open et on la met dans la liste Closed
 			removeFromOpen(current);
 			addToClosed(current);
 			
-			// search through all the neighbours of the current node evaluating
-			// them as next steps
+			//Rechercher chaque noeud voisin du noeud en evaluation et calculer leur cout 
+			//si elle devienne le prochain noeud sur lequel se deplace l'agent			
 			for (int x=-1;x<2;x++) {
 				for (int y=-1;y<2;y++) {
-					// not a neighbour, its the current tile
+					// Ce noeud est celui actuellement sous evaluation, il n'est donc pas un voisin
 					if ((x == 0) && (y == 0)) {
 						continue;
 					}
 					
-					// if we're not allowing diaganol movement then only 
-					// one of x or y can be set
+					//Si on interdit les deplacement en diagonale alors 
+					//les voisins en coin sont ignorer
 					if (!allowDiagMovement) {
 						if ((x != 0) && (y != 0)) {
 							continue;
 						}
-					}
+					}					
 					
-					// determine the location of the neighbour and evaluate it
+					//Localison le noeud voisin sur le terrain
 					int xp = x + current.getX();
 					int yp = y + current.getY();
 					
+					//Si le noeud voisin est une case de deplacement potentiel valide, 
+					//ie si c'est une case sans obstacle, a l'interieur du terrain et n'est pas le noeud de depart.
 					if (isValidLocation(mover,sx,sy,xp,yp)) {
-						// the cost to get to this node is cost the current plus the movement
-						// cost to reach this node. Note that the heursitic value is only used
-						// in the sorted open list
+						
+						//Le cout pour atteindre ce noeud voisin est le cout du noeud en evaluation plus le cout du mouvement. 
+						//Ce calcul n'inclue que la partie Disjstra (g(n)) de A*
 						float nextStepCost = current.getCost() + getMovementCost(mover, current.getX(), current.getY(), xp, yp); 
 						Node neighbour = nodes[xp][yp];
 						map.pathFinderVisited(xp, yp);
 						
-						// if the new cost we've determined for this node is lower than 
-						// it has been previously makes sure the node hasn't been discarded. We've
-						// determined that there might have been a better path to get to
-						// this node so it needs to be re-evaluated
+						//Si le nouveau cout (g(n)) calculer pour le noeud voisin est moindre que 
+						//son ancien cout calculer, alors s'assurer que le noeud n'est pas 
+						//dans la liste Closed. Nous avons trouver un meilleur chemin pour nous
+						//rendre a ce noeud. Il faut donc reevaluer son f(n):
+						//Si le noeud faisait deja partie de la liste Open, nous allons le retirer 
+						//pour le temps de la reevaluation.
 						if (nextStepCost < neighbour.getCost()) {
 							if (inOpenList(neighbour)) {
 								removeFromOpen(neighbour);
@@ -141,10 +148,9 @@ public class AStarPathFinder implements PathFinder {
 								removeFromClosed(neighbour);
 							}
 						}
-						
-						// if the node hasn't already been processed and discarded then
-						// reset it's cost to our current cost and add it as a next possible
-						// step (i.e. to the open list)
+												
+						//Si le noeud ne fait pas partie de la liste de noeud candidate a evaluer(Open) ou de la liste des noeud rejeter (Closed)
+						//alors calculer et assigner son nouveau cout g(n) et h(n) et l'ajouter à la liste Open.
 						if (!inOpenList(neighbour) && !(inClosedList(neighbour))) {
 							neighbour.setCost(nextStepCost);
 							neighbour.setHeuristic(getHeuristicCost(mover, xp, yp, tx, ty, sx, sy));
@@ -155,16 +161,15 @@ public class AStarPathFinder implements PathFinder {
 				}
 			}
 		}
-
-		// since we've got an empty open list or we've run out of search 
-		// there was no path. Just return null
+				
+		//Nous n'avons pas atteint la destination dans notre recherche. Retourne null.
 		if (nodes[tx][ty].getParent() == null) {
 			return null;
 		}
-		
-		// At this point we've definitely found a path so we can uses the parent
-		// references of the nodes to find out way from the target location back
-		// to the start recording the nodes on the way.
+				
+		//Nous avons atteint la destination, retourner le chemin trouver.
+		//Utiliser les references au parent pour faire le chemin du retour et reconstituer l'ensemble des 
+		//noeuds empruntés
 		Path path = new Path();
 		Node target = nodes[tx][ty];
 		while (target != nodes[sx][sy]) {
@@ -209,6 +214,10 @@ public class AStarPathFinder implements PathFinder {
 	 */
 	protected boolean inOpenList(Node node) {
 		return open.contains(node);
+	}
+	
+	public int getOpenListSize() {
+		return open.size();
 	}
 	
 	/**
