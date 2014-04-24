@@ -24,6 +24,8 @@ import newBoite.AStarPathFinder;
 import newBoite.Path;
 import newBoite.PathFinder;
 
+import javax.swing.JOptionPane;
+
 /**
  * A simple test to show some path finding at unit
  * movement for a tutorial at http://www.cokeandcode.com
@@ -56,7 +58,7 @@ public class PathTest extends JFrame {
 	private int lastFindX = -1;
 	/** The y coordinate of the target of the last path we searched for - used to cache and prevent constantly re-searching */
 	private int lastFindY = -1;
-	
+	private boolean inTest = true;
 	/**
 	 * Create a new test game for the path finding tutorial
 	 */
@@ -82,14 +84,14 @@ public class PathTest extends JFrame {
 				handleMousePressed(e.getX(), e.getY());
 			}
 		});
-		/*addMouseMotionListener(new MouseMotionListener() {
+		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged(MouseEvent e) {
 			}
 
 			public void mouseMoved(MouseEvent e) {
 				handleMouseMoved(e.getX(), e.getY());
 			}
-		});*/
+		});
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
@@ -136,7 +138,7 @@ public class PathTest extends JFrame {
 			return;
 		}
 		
-		if (selectedx != -1) {
+		if (selectedx != -1 && !inTest) {
 			if ((lastFindX != x) || (lastFindY != y)) {
 				lastFindX = x;
 				lastFindY = y;
@@ -174,7 +176,7 @@ public class PathTest extends JFrame {
 			selectedy = y;
 			lastFindX = - 1;
 		} else {
-			if (selectedx != -1) {
+			if (selectedx != -1 && !inTest) {
 				map.clearVisited();
 				path = finder.findPath(new UnitMover(map.getUnit(selectedx, selectedy)), 
 						   			   selectedx, selectedy, x, y);
@@ -255,6 +257,14 @@ public class PathTest extends JFrame {
 		graphics.drawImage(buffer, 0, 0, null);
 	}
 	
+	public boolean getInTest(){
+		return inTest;
+	}
+	
+	public void setInTest(boolean b){
+		inTest = b;
+	}
+	
 	public static void writeToFile (String content, File file){
 		try {
 			  
@@ -282,7 +292,8 @@ public class PathTest extends JFrame {
 	 * @param argv The arguments passed into the game
 	 */
 	public static void main(String[] argv) {
-		File file = new File("TestB.txt");
+		String nomFichier = "TestB.txt";
+		File file = new File(nomFichier);
 		String content = new String();
 		Path path;
 		int n=0;	
@@ -297,6 +308,7 @@ public class PathTest extends JFrame {
 		int totalCheminNonTrouver =0;
 		test.finder.setHeuristicWeight((float)(0));
 		//Variation du poid (cout) de l'heuristique
+		JOptionPane.showMessageDialog(null, "Presser sur OK pour commencer l'analyse de l'algorithme et veuillez attendre le message de confirmation avant de commencer à jouer. Les resultat d'analyse sont sauvegarder dans le fichier "+nomFichier+".");
 		for (float z=0;z<5;z=(float)(z+0.2)){
 			totalTest=0;
 			totalPath=0;
@@ -325,5 +337,8 @@ public class PathTest extends JFrame {
 			n++;
 		}
 		writeToFile(content,file );	
+		test.finder.setHeuristicWeight((float)1.2);
+		JOptionPane.showMessageDialog(null,"L'analyse est complété, vous pouvez commencer a jouer!");
+		test.setInTest(false);
 	}
 }
