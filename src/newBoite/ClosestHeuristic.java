@@ -23,13 +23,36 @@ public class ClosestHeuristic implements AStarHeuristic {
 		return result;
 	}
 	
+	/**
+	 * Heuristique de A* : Le chemin de Manhattan
+	 * 
+	 * @param map Le terrain de tuile sur lequel le chemin est recherché
+	 * @param mover L'agent se déplacant sur le terrain, utile pour récupérer comportement special
+	 * @param D Le poid de l'heuristique
+	 * @param x Coordonnée en x de la case à évaluer
+	 * @param y Coordonnée en y de la case à évaluer
+	 * @param tx Coordonnée en x de la case à destination
+	 * @param ty Coordonnée en y de la case à destination
+	 */
 	public float getCostManhattan(TileBasedMap map, Mover mover,float D, int x, int y, int tx, int ty) {		
 		float dx = Math.abs(tx - x);
 		float dy = Math.abs(ty - y);
 		
 		return (float) ((D)*(dx +dy));
 	}
-	
+	/**
+	 * Heuristique de la variante de l'algorithme A* : Le Dynamic weigthing
+	 * 
+	 * @param map Le terrain de tuile sur lequel le chemin est recherché
+	 * @param mover L'agent se déplacant sur le terrain, utile pour récupérer comportement special
+	 * @param weight Le poid de l'heuristique
+	 * @param x Coordonnée en x de la case à évaluer
+	 * @param y Coordonnée en y de la case à évaluer
+	 * @param tx Coordonnée en x de la case à destination
+	 * @param ty Coordonnée en y de la case à destination
+	 * @param sx Coordonnée en x de la case à départ
+	 * @param sy Coordonnée en y de la case à départ
+	 */
 	public float getCostWithDynamicWeighting(TileBasedMap map, Mover mover,float weight, int x, int y, int tx, int ty, int sx, int sy) {		
 		float dx = Math.abs(tx - x);
 		float dy = Math.abs(ty - y);

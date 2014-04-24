@@ -308,7 +308,7 @@ public class PathTest extends JFrame {
 		int totalCheminNonTrouver =0;
 		test.finder.setHeuristicWeight((float)(0));
 		//Variation du poid (cout) de l'heuristique
-		JOptionPane.showMessageDialog(null, "Presser sur OK pour commencer l'analyse de l'algorithme et veuillez attendre le message de confirmation avant de commencer à jouer. Les resultat d'analyse sont sauvegarder dans le fichier "+nomFichier+".");
+		JOptionPane.showMessageDialog(null, "Presser sur OK pour débuter l'analyse de l'algorithme et veuillez attendre\n le message de complétion avant de commencer à jouer. Les résultats d'analyses\n sont sauvegardés dans le fichier "+nomFichier+".");
 		for (float z=0;z<5;z=(float)(z+0.2)){
 			totalTest=0;
 			totalPath=0;
@@ -338,7 +338,7 @@ public class PathTest extends JFrame {
 		}
 		writeToFile(content,file );	
 		test.finder.setHeuristicWeight((float)1.2);
-		JOptionPane.showMessageDialog(null,"L'analyse est complété, vous pouvez commencer a jouer!");
+		JOptionPane.showMessageDialog(null,"L'analyse est complété, vous pouvez commencer à jouer!");
 		test.setInTest(false);
 	}
 }
